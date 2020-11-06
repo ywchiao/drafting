@@ -1,73 +1,36 @@
-'use strict';
-
-let HTML = (tag, cls) => {
-  let el = document.createElement(tag);
-
-  if (cls) {
-    el.className = cls;
-  }
-
-  return el;
-} // HTML()
-
-let Html = function (tag) {
-  let el = document.createElement(tag);
-
-  return {
-    node: () => {
-      return el;
-    },
-
-    appendChild: function (node) {
-      el.appendChild(node);
-
-      return this;
-    },
-
-    setAttribute: function (attribute, value) {
-//      this.node[attribute] = value;
-      el[attribute] = value;
-
-      return this;
-    },
-
-    setClass: function (cls) {
-      el.className = cls;
-
-      return this;
-    },
-  };
-};
-
 window.addEventListener('load', () => {
   console.log("drafting.js loaded");
 
-  let siteContainer = HTML('div', 'site-container');
+  let siteContainer = document.createElement('div');
+  siteContainer.className = 'site-container';
 
-  let siteTitle = Html('h1')
-    .setAttribute('innerHTML', 'Drafting')
-    .node();
+  let siteBanner = document.createElement('header');
+  siteBanner.className = 'site-banner';
 
-  let siteSubtitle = Html('h3')
-    .setAttribute('innerHTML', '一個 html/css/node.js 的練習專案')
-    .node();
+  let siteTitle = document.createElement('h1');
+  siteTitle.innerHTML = 'Drafting:';
 
-  let siteBanner = Html('header')
-    .setClass('site-banner')
-    .appendChild(siteTitle)
-    .appendChild(siteSubtitle)
-    .node();
+  let siteSubtitle = document.createElement('h3');
+  siteSubtitle.innerHTML = '一個 html/css/node.js 的練習專案';
 
-  let siteBody = HTML('article', 'site-body');
-  let siteStatus = HTML('header', 'site-status');
+  siteBanner.appendChild(siteTitle);
+  siteBanner.appendChild(siteSubtitle);
+
+  let siteBody = document.createElement('article');
+  siteBody.className = 'site-body';
+
+  let siteStatus = document.createElement('header');
+  siteStatus.className = 'site-status';
 
   siteStatus.innerHTML = '<span>x:<span id="cursor-x">0</span>y:<span id="cursor-y">0</span>';
 
   siteBody.appendChild(siteStatus);
 
-  let siteFooter = HTML('footer', 'site-footer');
+  let siteFooter = document.createElement('footer');
+  siteFooter.className = 'site-footer';
 
-  let copyright = HTML('small', 'float-right');
+  let copyright = document.createElement('small');
+  copyright.className = 'float-right';
   copyright.innerHTML = '&copy; Copyright 2020，佛光大學資訊應用學系';
 
   siteFooter.appendChild(copyright);
@@ -79,20 +42,23 @@ window.addEventListener('load', () => {
   document.body.appendChild(siteContainer);
 
   // 準備承載 *網頁標題* (title) 的 HTML 元素
-  let cardTitle = HTML('span');
+  let cardTitle = document.createElement('span');
   cardTitle.textContent = 'Drafting!';
 
   // 準備承載 *網頁版頭* (header) 的 HTML 元素
-  let cardHeader = HTML('header', 'card-header');
+  let cardHeader = document.createElement('header');
+  cardHeader.className = 'card-header';
 
   // 將 *網頁標題* 放上 *網頁版頭*
   cardHeader.appendChild(cardTitle);
 
   // 準備承載 *網頁內容* 的 HTML 元素
-  let cardContent = HTML('article', 'card-content');
+  let cardContent = document.createElement('article');
+  cardContent.className = 'card-content';
 
   // 準備 *網頁桌面* 的 HTML 元素
-  let cardDesktop = HTML('section', 'card');
+  let cardDesktop = document.createElement('section');
+  cardDesktop.className = 'card';
 
   // 將 *網頁版頭* 放上 *網頁桌面*
   cardDesktop.appendChild(cardHeader);
