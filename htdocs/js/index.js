@@ -1,20 +1,10 @@
 'use strict';
 
-let HTML = (tag, cls) => {
-  let el = document.createElement(tag);
-
-  if (cls) {
-    el.className = cls;
-  }
-
-  return el;
-} // HTML()
-
 let Html = function (tag) {
   let el = document.createElement(tag);
 
   return {
-    node: () => {
+    get node() {
       return el;
     },
 
@@ -25,7 +15,6 @@ let Html = function (tag) {
     },
 
     setAttribute: function (attribute, value) {
-//      this.node[attribute] = value;
       el[attribute] = value;
 
       return this;
@@ -42,67 +31,70 @@ let Html = function (tag) {
 window.addEventListener('load', () => {
   console.log("drafting.js loaded");
 
-  let siteContainer = HTML('div', 'site-container');
-
   let siteTitle = Html('h1')
-    .setAttribute('innerHTML', 'Drafting')
-    .node();
+    .setAttribute('innerHTML', 'Drafting');
 
   let siteSubtitle = Html('h3')
-    .setAttribute('innerHTML', '一個 html/css/node.js 的練習專案')
-    .node();
+    .setAttribute('innerHTML', '一個 html/css/node.js 的練習專案');
 
   let siteBanner = Html('header')
     .setClass('site-banner')
-    .appendChild(siteTitle)
-    .appendChild(siteSubtitle)
-    .node();
+    .appendChild(siteTitle.node)
+    .appendChild(siteSubtitle.node);
 
-  let siteBody = HTML('article', 'site-body');
-  let siteStatus = HTML('header', 'site-status');
+  let siteStatus = Html('header')
+    .setClass('site-status')
+    .setAttribute(
+      'innerHTML',
+      '<span>x:<span id="cursor-x">0</span>y:<span id="cursor-y">0</span>'
+    );
 
-  siteStatus.innerHTML = '<span>x:<span id="cursor-x">0</span>y:<span id="cursor-y">0</span>';
+  let siteBody = Html('article')
+    .setClass('site-body')
+    .appendChild(siteStatus.node);
 
-  siteBody.appendChild(siteStatus);
+  let copyright = Html('small')
+    .setClass('float-right')
+    .setAttribute(
+      'innerHTML',
+      '&copy; Copyright 2020，佛光大學資訊應用學系'
+    );
 
-  let siteFooter = HTML('footer', 'site-footer');
+  let siteFooter = Html('footer')
+    .setClass('site-footer')
+    .appendChild(copyright.node);
 
-  let copyright = HTML('small', 'float-right');
-  copyright.innerHTML = '&copy; Copyright 2020，佛光大學資訊應用學系';
+  let siteContainer = Html('div')
+    .setClass('site-container')
+    .appendChild(siteBanner.node)
+    .appendChild(siteBody.node)
+    .appendChild(siteFooter.node);
 
-  siteFooter.appendChild(copyright);
-
-  siteContainer.appendChild(siteBanner);
-  siteContainer.appendChild(siteBody);
-  siteContainer.appendChild(siteFooter);
-
-  document.body.appendChild(siteContainer);
+  document.body.appendChild(siteContainer.node);
 
   // 準備承載 *網頁標題* (title) 的 HTML 元素
-  let cardTitle = HTML('span');
-  cardTitle.textContent = 'Drafting!';
+  let cardTitle = Html('span')
+    .setAttribute('textContent', 'Drafting!');
 
   // 準備承載 *網頁版頭* (header) 的 HTML 元素
-  let cardHeader = HTML('header', 'card-header');
-
-  // 將 *網頁標題* 放上 *網頁版頭*
-  cardHeader.appendChild(cardTitle);
+  let cardHeader = Html('header')
+    .setClass('card-header')
+    .appendChild(cardTitle.node); // 將 *網頁標題* 放上 *網頁版頭*
 
   // 準備承載 *網頁內容* 的 HTML 元素
-  let cardContent = HTML('article', 'card-content');
+  let cardContent = Html('article')
+    .setClass('card-content');
 
   // 準備 *網頁桌面* 的 HTML 元素
-  let cardDesktop = HTML('section', 'card');
-
-  // 將 *網頁版頭* 放上 *網頁桌面*
-  cardDesktop.appendChild(cardHeader);
-
-  // 將 *網頁內容* 放上 *網頁桌面*
-  cardDesktop.appendChild(cardContent);
+  let cardDesktop = Html('section')
+    .setClass('card')
+    .appendChild(cardHeader.node)   // 將 *網頁版頭* 放上 *網頁桌面*
+    .appendChild(cardContent.node); // 將 *網頁內容* 放上 *網頁桌面*
 
   // 將 *網頁桌面* 放上 *網頁*
-  let desktop = document.querySelector('.site-body')
-  desktop.appendChild(cardDesktop);
+  let desktop = document
+    .querySelector('.site-body')
+    .appendChild(cardDesktop.node);
 
   /**
    * 滑鼠游標移動追踪

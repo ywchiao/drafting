@@ -122,6 +122,38 @@ footer {
   padding: 0 1rem;
 }
 
+.control-label {
+  display: inline-block;
+  width: 6rem;
+  margin: .25rem .25rem;
+}
+
+.control {
+  display: inline-block;
+  width: 16rem;
+  margin: .25rem .25rem;
+}
+
+.h-field {
+  display: flex;
+  justify-content: center;
+}
+
+.field {
+  width: 16rem;
+  height: 1.5rem;
+  line-height: 2rem;
+  margin: .25rem .25rem;
+  padding: .25rem;
+  background-color: #cccccc;
+  border-radius: 4px;
+}
+
+.pane {
+  display: flex;
+  flex-flow: column;
+}
+
 /*
  * 頁面的根 container
  */
