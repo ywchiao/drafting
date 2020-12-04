@@ -1,6 +1,18 @@
 var http = require('http');
 
-let staticFile = (response, fname) => {
+const route_table = {
+  '/': '../htdocs/index.html',
+  '/styles.css': '../htdocs/assets/css/styles.css',
+  '/index.js': '../htdocs/js/index.js',
+};
+
+const mime_type = {
+  '.css': 'text/css',
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+};
+
+let staticFile = (response, fname, mime) => {
   let fs = require('fs');
 
   fs.readFile(fname, (err, data) => {
@@ -9,7 +21,8 @@ let staticFile = (response, fname) => {
     }
     else {
       response.writeHead(200, {
-        'Content-Type': 'text/html',
+//        'Content-Type': 'text/html',
+        'Content-Type': mime,
       });
 
       response.write(data);
@@ -22,18 +35,16 @@ http.createServer((request, response) => {
   request.on('data', (chunk) => {
     console.log(`data chunk: ${chunk}`);
   }).on('end', () => {
+    let path = require('path');
     let url = require('url');
     let pathname = url.parse(request.url).pathname;
+    let fname = route_table[pathname];
 
-    switch (pathname) {
-      case '/':
-        staticFile(response, '../htdocs/index.html');
-
-        break;
-
-      default:
-        break;
-    } // switch
+    if (fname) {
+      staticFile(
+        response, fname, mime_type[path.extname(fname)]
+      );
+    }
 
     console.log(`Request for ${pathname}`);
   });
