@@ -1,0 +1,5 @@
+{
+  "/": "../htdocs/index.html",
+  "/styles.css": "../htdocs/assets/css/styles.css",
+  "/index.js": "../htdocs/js/index.js"
+}

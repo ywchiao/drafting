@@ -28,6 +28,73 @@ let Html = function (tag) {
   };
 };
 
+function inputField(o) {
+  let input = Html('input')
+    .setClass('input')
+    .setAttribute('placeholder', o.hint)
+    .setAttribute('id', o.id)
+    .setAttribute('type', o.type);
+
+  let control = Html('p')
+    .setClass('control')
+    .appendChild(input.node);
+
+  let label = Html('label')
+    .setClass('control-label')
+    .setAttribute('htmlFor', o.id)
+    .setAttribute('textContent', o.label)
+    .appendChild(control.node);
+
+  let field = Html('div')
+    .setClass('h-field')
+    .appendChild(label.node)
+    .appendChild(control.node);
+
+  return field;
+}
+
+const fieldSet = {
+  'account': {
+    'id': 'name',
+    'icon': 'credit-card',
+    'hint': '王大錘',
+    'type': 'text',
+    'label': '姓名'
+  },
+  'address': {
+    'id': 'hp',
+    'icon': 'align-left',
+    'hint': '10',
+    'type': 'number',
+    'label': '血量 (hp)'
+  },
+  'bank': {
+    'id': 'ap',
+    'icon': 'bank',
+    'hint': '1',
+    'type': 'number',
+    'label': '攻擊力 (ap)'
+  },
+  'branch': {
+    'id': 'dp',
+    'icon': 'building',
+    'hint': '0',
+    'type': 'number',
+    'label': '防禦力 (dp)'
+  },
+};
+
+function getCharPane() {
+  let pane = Html('div')
+    .setClass('pane');
+
+  Object.values(fieldSet).forEach(value => {
+    pane.appendChild(inputField(value).node);
+  });
+
+  return pane;
+};
+
 window.addEventListener('load', () => {
   console.log("drafting.js loaded");
 
@@ -81,9 +148,12 @@ window.addEventListener('load', () => {
     .setClass('card-header')
     .appendChild(cardTitle.node); // 將 *網頁標題* 放上 *網頁版頭*
 
+  let charPane = getCharPane();
+
   // 準備承載 *網頁內容* 的 HTML 元素
   let cardContent = Html('article')
-    .setClass('card-content');
+    .setClass('card-content')
+    .appendChild(charPane.node);
 
   // 準備 *網頁桌面* 的 HTML 元素
   let cardDesktop = Html('section')
