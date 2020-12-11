@@ -4,24 +4,22 @@ let staticFile = (fname) => {
   let path = require('path');
   let mime_type = require('./config/mime.json');
 
-  let mime = mime_type[path.extname(fname)]
+  let mime = mime_type[path.extname(fname)] || 'application/octet-stream';
 
   return (response) => {
-    if (fname) {
-      fs.readFile(fname, (err, data) => {
-        if (err) {
-          console.log(`檔案讀取錯誤: ${err}`);
-        }
-        else {
-          response.writeHead(200, {
-            'Content-Type': mime,
-          });
+    fs.readFile(fname, (err, data) => {
+      if (err) {
+        console.log(`檔案讀取錯誤: ${err}`);
+      }
+      else {
+        response.writeHead(200, {
+          'Content-Type': mime,
+        });
 
-          response.write(data);
-          response.end();
-        } // if
-      });
-    }
+        response.write(data);
+        response.end();
+      } // if
+    });
   };
 } // staticFile()
 
