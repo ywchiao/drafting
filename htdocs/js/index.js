@@ -14,6 +14,12 @@ let Html = function (tag) {
       return this;
     },
 
+    on: function (e, fn) {
+      el.addEventListener(e, fn);
+
+      return this;
+    },
+
     setAttribute: function (attribute, value) {
       el[attribute] = value;
 
@@ -28,12 +34,91 @@ let Html = function (tag) {
   };
 };
 
-function inputField(o) {
+const Http = (() => {
+  const headers = new Headers({
+    "Accept": "application/json",
+    "Content-Type": "application/json; charset=UTF-8"
+  });
+
+  return {
+    HTTP_OK: 200,
+
+    HTTP_203: 203,
+
+    HTTP_204: 204,
+
+    get: function (url, args = {}) {
+      return fetch(get_url(url, args), {
+        method: "GET",
+        headers: headers,
+      });
+    },
+
+    head: function (url) {
+      return fetch(url, {
+        method: "HEAD",
+        headers: headers,
+      });
+    },
+
+    delete: function (url) {
+      return fetch(url, {
+        method: "DELETE",
+        headers: headers,
+      });
+    },
+
+    patch: function (url, data = {}) {
+      return fetch(url, {
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+    },
+
+    post: function (url, data = {}) {
+      return fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+    },
+
+    put: function (url, data = {}) {
+      return fetch(url, {
+        method: "PUT",
+        headers: headers,
+        body: JSON.stringify(data)
+      });
+    },
+
+    query: function (url, data = {}) {
+      return fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(data)
+      }).then(response => {
+        let json = {};
+
+        if (response.status === 200) {
+          json = response.json();
+        }
+
+        return json;
+      });
+    },
+  };
+})();
+
+function inputField(key, value, binding) {
   let input = Html('input')
     .setClass('input')
-    .setAttribute('placeholder', o.hint)
-    .setAttribute('id', o.id)
-    .setAttribute('type', o.type);
+    .setAttribute('placeholder', value.hint)
+    .setAttribute('id', key)
+    .setAttribute('type', value.type)
+    .on('change', e => {
+      binding[key] = e.target.value;
+    });
 
   let control = Html('p')
     .setClass('control')
@@ -41,8 +126,8 @@ function inputField(o) {
 
   let label = Html('label')
     .setClass('control-label')
-    .setAttribute('htmlFor', o.id)
-    .setAttribute('textContent', o.label)
+    .setAttribute('htmlFor', key)
+    .setAttribute('textContent', value.label)
     .appendChild(control.node);
 
   let field = Html('div')
@@ -51,45 +136,39 @@ function inputField(o) {
     .appendChild(control.node);
 
   return field;
-}
+};
 
 const fieldSet = {
-  'account': {
-    'id': 'name',
-    'icon': 'credit-card',
+  'name': {
     'hint': '王大錘',
     'type': 'text',
-    'label': '姓名'
+    'label': '姓名',
   },
-  'address': {
-    'id': 'hp',
-    'icon': 'align-left',
+  'hp': {
     'hint': '10',
     'type': 'number',
     'label': '血量 (hp)'
   },
-  'bank': {
-    'id': 'ap',
-    'icon': 'bank',
+  'ap': {
     'hint': '1',
     'type': 'number',
     'label': '攻擊力 (ap)'
   },
-  'branch': {
-    'id': 'dp',
-    'icon': 'building',
+  'dp': {
     'hint': '0',
     'type': 'number',
     'label': '防禦力 (dp)'
   },
 };
 
+let charData = {};
+
 function getCharPane() {
   let pane = Html('div')
     .setClass('pane');
 
-  Object.values(fieldSet).forEach(value => {
-    pane.appendChild(inputField(value).node);
+  Object.entries(fieldSet).forEach(([key, value]) => {
+    pane.appendChild(inputField(key, value, charData).node);
   });
 
   return pane;
@@ -149,11 +228,21 @@ window.addEventListener('load', () => {
     .appendChild(cardTitle.node); // 將 *網頁標題* 放上 *網頁版頭*
 
   let charPane = getCharPane();
+  let btnSubmit = Html('input')
+    .setAttribute('type', 'button')
+    .setAttribute('value', 'Ok')
+    .setClass('control-button')
+    .on('click', () => {
+      console.log(JSON.stringify(charData));
+
+      Http.post(`api/update/${charData.name}`, charData);
+    });
 
   // 準備承載 *網頁內容* 的 HTML 元素
   let cardContent = Html('article')
     .setClass('card-content')
-    .appendChild(charPane.node);
+    .appendChild(charPane.node)
+    .appendChild(btnSubmit.node);
 
   // 準備 *網頁桌面* 的 HTML 元素
   let cardDesktop = Html('section')

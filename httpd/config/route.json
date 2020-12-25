@@ -1,5 +1,6 @@
 {
   "/": "../htdocs/index.html",
   "/styles.css": "../htdocs/assets/css/styles.css",
-  "/index.js": "../htdocs/js/index.js"
+  "/index.js": "../htdocs/js/index.js",
+  "/api/update": "update"
 }

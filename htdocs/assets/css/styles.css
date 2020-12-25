@@ -114,11 +114,11 @@ footer {
   padding: 0.25rem;
 }
 
-.ctrl-button {
-  background-color: #bfc7f7;
-  border-radius: 8px;
+.control-button {
+  background-color: #a5f8e1;
+  border-radius: 4px;
   font-size: 1.25rem;
-  margin: 0.25rem 0.25rem;
+  margin: auto;
   padding: 0 1rem;
 }
 
